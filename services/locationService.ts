@@ -15,7 +15,12 @@ export const getLocation = async () => {
   const permission = await getPermission();
   if (!permission) return null;
 
-  const { coords } = await Location.getCurrentPositionAsync({});
-  console.log('Location: ', coords.latitude, coords.longitude);
-  return coords;
+  try {
+    const { coords } = await Location.getCurrentPositionAsync({});
+    console.log('Location: ', coords.latitude, coords.longitude);
+    return { lat: coords.latitude, lng: coords.longitude };
+  } catch (error) {
+    console.error('Error getting location: ', error);
+    return null;
+  }
 };
