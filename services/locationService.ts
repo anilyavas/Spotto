@@ -7,6 +7,8 @@ export const getPermission = async () => {
     console.error('Permission to access location was denied');
     return false;
   }
+  console.log('Permission granted!');
+  return true;
 };
 
 export const getLocation = async () => {
