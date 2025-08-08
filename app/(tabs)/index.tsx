@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocation } from '~/services/locationService';
+import { LocationCoords } from '~/types/types';
 
 export default function Home() {
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [location, setLocation] = useState<LocationCoords | null>(null);
 
   useEffect(() => {
     let subscription: any;
@@ -38,8 +39,8 @@ export default function Home() {
         initialRegion={{
           latitude: location?.lat || 0,
           longitude: location?.lng || 0,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
         }}
         region={{
           latitude: location?.lat || 0,
