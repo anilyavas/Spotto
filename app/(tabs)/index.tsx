@@ -3,10 +3,11 @@ import { ActivityIndicator, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocation } from '~/services/locationService';
 import { LocationCoords } from '~/types/types';
+import ParkButton from '~/components/ParkButton';
 
 export default function Home() {
   const [location, setLocation] = useState<LocationCoords | null>(null);
-
+  const [isParked, setIsParked] = useState(false);
   useEffect(() => {
     let subscription: any;
     const setupLocation = async () => {
@@ -22,6 +23,16 @@ export default function Home() {
       }
     };
   }, []);
+
+  const handlePark = async () => {
+    try {
+      // parking logic here
+    } catch (error) {
+      console.error('Error while parking: ', error);
+    } finally {
+      setIsParked(true);
+    }
+  };
 
   if (!location) {
     return (
@@ -45,8 +56,8 @@ export default function Home() {
         region={{
           latitude: location?.lat || 0,
           longitude: location?.lng || 0,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         }}>
         {location && (
           <Marker
@@ -55,6 +66,7 @@ export default function Home() {
           />
         )}
       </MapView>
+      <ParkButton onPress={handlePark} isParked={isParked} />
     </View>
   );
 }
