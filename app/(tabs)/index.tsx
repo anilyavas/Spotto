@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocation } from '~/services/locationService';
+import { LocationCoords } from '~/types/types';
 
 export default function Home() {
-  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [coords, setCoords] = useState<LocationCoords | null>(null);
 
   useEffect(() => {
     const getCoords = async () => {

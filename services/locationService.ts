@@ -7,17 +7,17 @@ export const getPermission = async () => {
     console.error('Permission to access location was denied');
     return false;
   }
-  console.log('Permission granted!');
+  //console.log('Permission granted!');
   return true;
 };
 
-export const getLocation = async () => {
+export const getLocation = async (): Promise<{ lat: number; lng: number } | null> => {
   const permission = await getPermission();
-  if (!permission) return null;
 
+  if (!permission) return null;
   try {
     const { coords } = await Location.getCurrentPositionAsync({});
-    console.log('Location: ', coords.latitude, coords.longitude);
+    //console.log('Location: ', coords.latitude, coords.longitude);
     return { lat: coords.latitude, lng: coords.longitude };
   } catch (error) {
     console.error('Error getting location: ', error);
