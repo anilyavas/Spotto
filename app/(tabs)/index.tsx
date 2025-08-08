@@ -2,23 +2,27 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocation } from '~/services/locationService';
-import { LocationCoords } from '~/types/types';
 
 export default function Home() {
-  const [coords, setCoords] = useState<LocationCoords | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
-    const getCoords = async () => {
-      const location = await getLocation();
-      if (location) {
-        const { lat, lng } = location;
-        setCoords({ latitude: lat, longitude: lng });
+    let subscription: any;
+    const setupLocation = async () => {
+      subscription = await getLocation((coords) => {
+        setLocation(coords);
+      });
+    };
+    setupLocation();
+
+    return () => {
+      if (subscription) {
+        subscription.remove();
       }
     };
-    getCoords();
   }, []);
 
-  if (!coords) {
+  if (!location) {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size={'large'} />
@@ -28,8 +32,27 @@ export default function Home() {
 
   return (
     <View className="flex-1 items-center justify-center">
-      <MapView style={{ width: '100%', height: '100%' }} zoomEnabled={true}>
-        <Marker coordinate={coords} />
+      <MapView
+        style={{ width: '100%', height: '100%' }}
+        zoomEnabled={true}
+        initialRegion={{
+          latitude: location?.lat || 0,
+          longitude: location?.lng || 0,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+        region={{
+          latitude: location?.lat || 0,
+          longitude: location?.lng || 0,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}>
+        {location && (
+          <Marker
+            coordinate={{ latitude: location.lat, longitude: location.lng }}
+            title="You are here"
+          />
+        )}
       </MapView>
     </View>
   );
