@@ -36,3 +36,19 @@ export const getLocation = async (
     return null;
   }
 };
+
+export const getCurrentLocation = async () => {
+  const permission = await getPermission();
+  if (!permission) return null;
+  try {
+    const { coords } = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+      timeInterval: 5000,
+      distanceInterval: 5,
+    });
+    return { lat: coords.latitude, lng: coords.longitude };
+  } catch (error) {
+    console.error('Error getting current location: ', error);
+    return null;
+  }
+};
