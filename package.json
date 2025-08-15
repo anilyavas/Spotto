@@ -1,6 +1,7 @@
 {
   "name": "spotto",
   "version": "1.0.0",
+  "scheme": "spotto",
   "main": "expo-router/entry",
   "scripts": {
     "android": "expo start --android",
