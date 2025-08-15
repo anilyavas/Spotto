@@ -25,47 +25,76 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Derive isAuthenticated from user state instead of separate state
+  const isAuthenticated = !!user;
+
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setUser(session.user);
-        setIsAuthenticated(true);
+    let isMounted = true; // Prevent state updates if component unmounted
+
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        if (isMounted) {
+          if (session?.user && !error) {
+            setUser(session.user);
+          } else {
+            setUser(null);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (isMounted) {
+          setUser(null);
+          setIsLoading(false);
+        }
       }
-      setIsLoading(false);
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        setUser(session.user);
-        setIsAuthenticated(true);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth event:', event, session?.user?.email);
+
+      if (isMounted) {
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          setUser(null);
+        }
+        setIsLoading(false);
       }
     });
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Empty dependency array
+
+  const contextValue = {
+    user,
+    isAuthenticated,
+    isLoading,
+  };
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size={'large'} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
-  return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
