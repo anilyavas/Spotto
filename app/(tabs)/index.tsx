@@ -4,33 +4,45 @@ import MapView, { Marker } from 'react-native-maps';
 import { getLocation } from '~/services/locationService';
 import { LocationCoords } from '~/types/types';
 import ParkButton from '~/components/ParkButton';
+import { useParkingStore } from '~/store/locationStore';
 
 export default function Home() {
   const [location, setLocation] = useState<LocationCoords | null>(null);
-  const [isParked, setIsParked] = useState(false);
+  const { location: parkedLocation, parkHere, clearLocation, fetchLocation } = useParkingStore();
+
   useEffect(() => {
     let subscription: any;
-    const setupLocation = async () => {
+
+    (async () => {
       subscription = await getLocation((coords) => {
         setLocation(coords);
       });
-    };
-    setupLocation();
+    })();
+
+    fetchLocation();
 
     return () => {
       if (subscription) {
         subscription.remove();
       }
     };
-  }, []);
+  }, [fetchLocation]);
 
   const handlePark = async () => {
+    if (!location) return;
     try {
-      // parking logic here
+      await parkHere(location?.lat, location?.lng);
+      console.log('Parked at: ', parkedLocation);
     } catch (error) {
       console.error('Error while parking: ', error);
-    } finally {
-      setIsParked(true);
+    }
+  };
+
+  const handleClear = async () => {
+    try {
+      await clearLocation();
+    } catch (error) {
+      console.error('Error while clearing parked location: ', error);
     }
   };
 
@@ -62,11 +74,19 @@ export default function Home() {
         {location && (
           <Marker
             coordinate={{ latitude: location.lat, longitude: location.lng }}
-            title="You are here"
+            title="You are here!"
+            pinColor="blue"
+          />
+        )}
+        {parkedLocation && (
+          <Marker
+            coordinate={{ latitude: parkedLocation.lat, longitude: parkedLocation.lng }}
+            title="Car is parked here!"
+            pinColor="red"
           />
         )}
       </MapView>
-      <ParkButton onPress={handlePark} isParked={isParked} />
+      <ParkButton onPress={parkedLocation ? handleClear : handlePark} isParked={!!parkedLocation} />
     </View>
   );
 }

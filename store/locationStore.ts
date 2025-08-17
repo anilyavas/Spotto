@@ -3,8 +3,8 @@ import { supabase } from '~/utils/supabase';
 
 type ParkedLocation = {
   id: string;
-  latitude: number;
-  longitude: number;
+  lng: number;
+  lat: number;
   created_at: string;
 };
 
