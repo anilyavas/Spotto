@@ -33,7 +33,18 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
-      set({ location: data || null, isLoading: false });
+
+      set({
+        location: data
+          ? {
+              id: data.id,
+              lat: data.latitude,
+              lng: data.longitude,
+              created_at: data.created_at,
+            }
+          : null,
+        isLoading: false,
+      });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
     }
@@ -57,7 +68,15 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
 
       if (error) throw error;
 
-      set({ location: data, isLoading: false });
+      set({
+        location: {
+          id: data.id,
+          lat: data.latitude,
+          lng: data.longitude,
+          created_at: data.created_at,
+        },
+        isLoading: false,
+      });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
     }
