@@ -80,7 +80,10 @@ export default function Home() {
         )}
         {parkedLocation && (
           <Marker
-            coordinate={{ latitude: parkedLocation.lat, longitude: parkedLocation.lng }}
+            coordinate={{
+              latitude: parkedLocation.lat + 0.00002,
+              longitude: parkedLocation.lng + 0.00002,
+            }}
             title="Car is parked here!"
             pinColor="red"
           />
