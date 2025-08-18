@@ -1,17 +1,9 @@
-import { View, Pressable, Text } from 'react-native';
-import { useState } from 'react';
-import { ParkingSpot } from '~/types/types';
+import { Pressable, Text } from 'react-native';
 
-export default function ParkButton({
-  onPress,
-  isParked,
-}: {
-  onPress: () => void;
-  isParked: boolean;
-}) {
-  const [parkedLocation, setParkedLocation] = useState<ParkingSpot | null>(null);
-
-  const handlePress = async () => {};
+export default function ParkButton({ onPress }: { onPress: () => void; isParked: boolean }) {
+  const handlePress = async () => {
+    onPress();
+  };
 
   return (
     <Pressable

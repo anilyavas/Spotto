@@ -66,6 +66,8 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .select()
         .single();
 
+      console.log('Parked location data:', data);
+
       if (error) throw error;
 
       set({
