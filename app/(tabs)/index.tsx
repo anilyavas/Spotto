@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocation } from '~/services/locationService';
 import { LocationCoords } from '~/types/types';
@@ -83,10 +83,11 @@ export default function Home() {
             coordinate={{
               latitude: parkedLocation.lat + 0.00002,
               longitude: parkedLocation.lng + 0.00002,
-            }}
-            title="Car is parked here!"
-            pinColor="red"
-          />
+            }}>
+            <View className="rounded-full border-2 border-yellow-400 bg-white p-2">
+              <Text className="text-2xl font-bold">🚗</Text>
+            </View>
+          </Marker>
         )}
       </MapView>
       <ParkButton onPress={parkedLocation ? handleClear : handlePark} isParked={!!parkedLocation} />

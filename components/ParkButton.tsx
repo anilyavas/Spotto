@@ -13,7 +13,9 @@ export default function ParkButton({
         isParked ? 'bg-red-600' : 'bg-green-600'
       }`}
       onPress={onPress}>
-      <Text className="text-xl font-bold text-white">{isParked ? 'Clear Park' : 'Park Here!'}</Text>
+      <Text className="text-xl font-bold text-white">
+        {isParked ? 'Clear Park!' : 'Park Here!'}
+      </Text>
     </Pressable>
   );
 }
