@@ -62,8 +62,8 @@ export default function Home() {
         initialRegion={{
           latitude: location?.lat || 0,
           longitude: location?.lng || 0,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         }}
         region={{
           latitude: location?.lat || 0,
