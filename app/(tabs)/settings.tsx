@@ -1,5 +1,5 @@
 import { User } from '@supabase/supabase-js';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -59,6 +59,7 @@ export default function Profile() {
       }
     } catch (error: any) {
       Alert.alert('Error', 'Something went wrong. Please try again later ');
+      console.error('Password change error:', error);
     } finally {
       setLoading(false);
     }
@@ -109,6 +110,7 @@ export default function Profile() {
                 await supabase.auth.signOut(); // Log out after account deletion
               } catch (error: any) {
                 Alert.alert('Something went wrong.');
+                console.error('Delete user error:', error);
               } finally {
                 setLoading(false);
               }
@@ -118,6 +120,7 @@ export default function Profile() {
       );
     } catch (error: any) {
       Alert.alert('Error', 'Something went wrong. Please try again.');
+      console.error('Delete user error:', error);
     }
   };
 
