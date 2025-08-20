@@ -90,7 +90,7 @@ export default function Profile() {
                 }
 
                 const response = await fetch(
-                  `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions.supabase.co/delete-user`,
+                  `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/delete-user`,
                   {
                     method: 'POST',
                     headers: {
