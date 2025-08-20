@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 import { supabase } from '../../utils/supabase';
-
 import { useAuth } from '~/context/AuthContext';
 
 export default function Profile() {
@@ -35,7 +34,6 @@ export default function Profile() {
         return;
       }
 
-      // Sign in with old password (to verify the user)
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: user.email,
         password: oldPassword,
@@ -47,7 +45,6 @@ export default function Profile() {
         return;
       }
 
-      // Update password
       const { error: updateError } = await supabase.auth.updateUser({
         password: newPassword,
       });
@@ -58,7 +55,7 @@ export default function Profile() {
         Alert.alert('Success', 'Password updated successfully');
       }
     } catch (error: any) {
-      Alert.alert('Error', 'Something went wrong. Please try again later ');
+      Alert.alert('Error', 'Something went wrong. Please try again later');
       console.error('Password change error:', error);
     } finally {
       setLoading(false);
@@ -107,7 +104,7 @@ export default function Profile() {
                 if (!response.ok) throw new Error(data.error || 'Failed to delete user');
 
                 Alert.alert('Success', 'Your account has been deleted.');
-                await supabase.auth.signOut(); // Log out after account deletion
+                await supabase.auth.signOut();
               } catch (error: any) {
                 Alert.alert('Something went wrong.');
                 console.error('Delete user error:', error);
@@ -124,70 +121,77 @@ export default function Profile() {
     }
   };
 
-  if (user.is_anonymous) {
+  if (user?.is_anonymous) {
     return (
-      <View className="flex-1 items-center justify-center bg-[#11100f] p-4">
-        <Text className="text-center font-bold text-white">Signed in as Guest.</Text>
+      <View className="flex-1 items-center justify-center bg-white p-4">
+        <Text className="text-center font-bold text-gray-800">Signed in as Guest.</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-[#11100f]">
-      <View className="flex-1 bg-[#11100f] p-5">
-        <View className="mb-4 rounded-lg bg-[#1a1a1a] p-4">
-          <Text className="text-lg text-white">Email: {user.email}</Text>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-1 p-5">
+        {/* User Info */}
+        <View className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <Text className="text-lg font-semibold text-gray-800">Email: {user.email}</Text>
         </View>
-        <View className="rounded-lg bg-[#1a1a1a] p-4">
-          <Text className="mb-2 text-white">Old Password</Text>
+
+        {/* Change Password Section */}
+        <View className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <Text className="mb-2 text-base font-semibold text-gray-700">Old Password</Text>
           <TextInput
             value={oldPassword}
             onChangeText={setOldPassword}
             secureTextEntry
             placeholder="Enter old password"
             placeholderTextColor="gray"
-            className="mb-4 rounded bg-[#333333] p-3 text-white"
+            className="mb-4 rounded border border-gray-300 bg-white p-3 text-gray-800"
           />
 
-          <Text className="mb-2 text-white">New Password</Text>
+          <Text className="mb-2 text-base font-semibold text-gray-700">New Password</Text>
           <TextInput
             value={newPassword}
             onChangeText={setNewPassword}
             secureTextEntry
             placeholder="Enter new password"
             placeholderTextColor="gray"
-            className="mb-4 rounded bg-[#333333] p-3 text-white"
+            className="mb-4 rounded border border-gray-300 bg-white p-3 text-gray-800"
           />
 
-          <Text className="mb-2 text-white">Confirm New Password</Text>
+          <Text className="mb-2 text-base font-semibold text-gray-700">Confirm New Password</Text>
           <TextInput
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry
             placeholder="Confirm new password"
             placeholderTextColor="gray"
-            className="mb-4 rounded bg-[#333333] p-3 text-white"
+            className="mb-4 rounded border border-gray-300 bg-white p-3 text-gray-800"
           />
 
           <Pressable
             onPress={handlePasswordChange}
-            className="items-center rounded-lg bg-red-600 p-4"
+            className="items-center rounded-lg bg-green-600 p-4"
             disabled={loading}>
             {loading ? (
-              <ActivityIndicator size={'large'} />
+              <ActivityIndicator size={'large'} color="#fff" />
             ) : (
               <Text className="font-bold text-white">Change Password</Text>
             )}
           </Pressable>
         </View>
+
+        {/* Delete Account */}
         <Pressable
           onPress={handleDeleteUser}
           className="m-4 items-center rounded-lg bg-red-600 p-4">
           <Text className="font-bold text-white">Delete Account</Text>
         </Pressable>
+
+        {/* Sign Out */}
         <Pressable
           onPress={() => supabase.auth.signOut()}
-          className="m-4 items-center rounded-lg bg-red-600 p-4">
+          className="m-4 items-center rounded-lg bg-gray-800 p-4">
           <Text className="font-bold text-white">Sign Out</Text>
         </Pressable>
       </View>
