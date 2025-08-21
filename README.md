@@ -14,12 +14,12 @@
 
 ## 🛠 Tech Stack
 
-- **React Native (Expo)** – For building the cross-platform mobile app.  
-- **TypeScript** – For type safety and cleaner code.  
-- **React Native Maps** – To display and interact with maps.  
-- **Expo Location** – To fetch and monitor the user’s GPS location.  
-- **AsyncStorage** – For persisting saved parking locations locally.  
-- **Supabase** – For authentication and cloud sync.  
+- **React Native (Expo)** – Cross-platform mobile development  
+- **TypeScript** – Type safety and cleaner code  
+- **React Native Maps** – Map rendering and interaction  
+- **Expo Location** – Device GPS tracking  
+- **AsyncStorage** – Local persistence of parked locations  
+- **Supabase** – Authentication and cloud sync  
 
 ## ⚙️ Installation
 
@@ -29,39 +29,42 @@ Follow these steps to set up the Spotto app locally:
    ```bash
    git clone https://github.com/your-username/Spotto.git
    cd Spotto
-   '''
-2. **Install dependencies**
-    '''
-    npm install
-    # or
-    yarn install
-    '''
-3. **Set up environment variables**
-   
-   Create a .env file in the project root and add your Supabase configuration:
+   ```
 
-   '''
+2. **Install dependencies**  
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Set up environment variables**  
+
+   Create a `.env` file in the project root and add your Supabase configuration:
+
+   ```
    EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-   EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key EXPO_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   '''
+   EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   EXPO_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   ```
 
-4. **Start the development server**
-   '''
+4. **Start the development server**  
+   ```bash
    npx expo start
-   '''
-5. **Run the app on your device or emulator**
+   ```
 
-    Press i to open in iOS Simulator
+5. **Run the app on your device or emulator**  
+   - Press `i` to open in iOS Simulator  
+   - Press `a` to open in Android Emulator  
+   - Or scan the QR code in the Expo Go app on a physical device  
 
-    Press a to open in Android Emulator
+6. **Optional: Run Supabase Edge Functions**  
 
-    Or scan the QR code in the Expo Go app on a physical device
+   If you use functions like `delete-user`, serve them locally:
 
-6. **Optional: Run Supabase Edge Functions**
-If you use functions like delete-user, serve them locally:
-'''
- npx supabase functions serve
-'''
+   ```bash
+   npx supabase functions serve
+   ```
 
 ## 🚀 Usage
 
@@ -96,38 +99,39 @@ Spotto allows users to mark and manage their parked vehicle locations with ease.
 
 Spotto is structured around a simple client-server model with mobile-first design and Supabase backend services.
 
+```
 ┌───────────── Mobile App ─────────────┐
-│ │
-│ 1. Map & Location │
-│ • Access device GPS │
-│ • Display map using react-native-maps │
-│ • Show parked location markers │
-│ │
-│ 2. Park / Clear Location │
-│ • Pressable button triggers store │
-│ • Calls Supabase to insert/delete location │
-│ │
-│ 3. Account Management │
-│ • Change password │
-│ • Delete account (via Edge Function) │
-│ │
+│                                      │
+│ 1. Map & Location                     │
+│    • Access device GPS                │
+│    • Display map using react-native-maps │
+│    • Show parked location markers     │
+│                                      │
+│ 2. Park / Clear Location              │
+│    • Pressable button triggers store  │
+│    • Calls Supabase to insert/delete location │
+│                                      │
+│ 3. Account Management                 │
+│    • Change password                  │
+│    • Delete account (via Edge Function) │
+│                                      │
 └───────────────┬──────────────────────┘
-│
-▼
+                │
+                ▼
 ┌───────────── Supabase Backend ─────────────┐
-│ │
-│ • PostgreSQL database │
-│ - Table: parked_locations │
-│ - Columns: id, user_id, latitude, longitude, created_at │
-│ │
-│ • Authentication (email/password) │
-│ │
-│ • Edge Function │
-│ - delete-user: securely deletes account │
-│ │
-│ • API Client: Supabase JS/TS SDK │
-└───────────────────────────────────────────┘
-
+│                                            │
+│ • PostgreSQL database                       │
+│   - Table: parked_locations                 │
+│   - Columns: id, user_id, latitude, longitude, created_at │
+│                                            │
+│ • Authentication (email/password)          │
+│                                            │
+│ • Edge Function                             │
+│   - delete-user: securely deletes account  │
+│                                            │
+│ • API Client: Supabase JS/TS SDK           │
+└────────────────────────────────────────────┘
+```
 
 ### Key Components
 - **Mobile App:** Built with React Native and TypeScript.
@@ -136,3 +140,35 @@ Spotto is structured around a simple client-server model with mobile-first desig
 - **Authentication:** Supabase Auth handles user sessions.
 - **Edge Functions:** Serverless functions for sensitive operations like account deletion.
 - **Maps:** `react-native-maps` displays current location and parked spots.
+
+## 🧪 Testing
+
+- Use Expo Go to test on a physical device.
+- Run the simulator for Android/iOS.
+- Test edge cases like overlapping GPS coordinates, no location permission, and offline mode.
+
+## 📦 Deployment
+
+- The app is ready to build with Expo EAS for both Android and iOS.
+- Supabase backend is live for authentication and storing parked locations.
+- Edge functions like `delete-user` should be deployed to Supabase Functions.
+
+## 📖 Contributing
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature`)
+3. Make your changes
+4. Commit (`git commit -m 'Add some feature'`)
+5. Push (`git push origin feature/your-feature`)
+6. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- React Native and Expo team
+- Supabase for backend services
+- React Native Maps and Expo Location for geolocation features
+- Inspired by real-world need to never forget parked locations
