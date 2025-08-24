@@ -10,15 +10,19 @@ type ParkedLocation = {
 
 type ParkingState = {
   location: ParkedLocation | null;
+  history: ParkedLocation[];
   isLoading: boolean;
   error: string | null;
   fetchLocation: () => Promise<void>;
   parkHere: (lat: number, lng: number) => Promise<void>;
   clearLocation: () => Promise<void>;
+  fetchHistory: () => Promise<void>;
+  deleteHistoryItem: (id: string) => Promise<void>;
 };
 
 export const useParkingStore = create<ParkingState>((set, get) => ({
   location: null,
+  history: [],
   isLoading: false,
   error: null,
 
@@ -66,9 +70,13 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .select()
         .single();
 
-      console.log('Parked location data:', data);
-
       if (error) throw error;
+
+      await supabase.from('parking_history').insert({
+        user_id: user.id,
+        lat,
+        lng,
+      });
 
       set({
         location: {
@@ -95,6 +103,39 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
       set({ location: null, isLoading: false });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
+    }
+  },
+
+  fetchHistory: async () => {
+    try {
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('parking_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      set({ history: data || [] });
+    } catch (err: any) {
+      set({ error: err.message });
+    }
+  },
+
+  deleteHistoryItem: async (id) => {
+    try {
+      const { error } = await supabase.from('parking_history').delete().eq('id', id);
+
+      if (error) throw error;
+
+      set((state) => ({
+        history: state.history.filter((loc) => loc.id !== id),
+      }));
+    } catch (err: any) {
+      set({ error: err.message });
     }
   },
 }));
