@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import { supabase } from '~/utils/supabase';
 
-type ParkedLocation = {
+export type ParkedLocation = {
   id: string;
   lng: number;
   lat: number;
   created_at: string;
 };
 
-type ParkingState = {
+export type ParkingState = {
   location: ParkedLocation | null;
   history: ParkedLocation[];
   isLoading: boolean;
