@@ -75,7 +75,7 @@ export default function Home() {
           <Marker
             coordinate={{ latitude: location.lat, longitude: location.lng }}
             title="You are here!"
-            pinColor="blue"
+            pinColor="green"
           />
         )}
         {parkedLocation && (

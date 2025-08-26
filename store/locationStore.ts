@@ -18,6 +18,7 @@ export type ParkingState = {
   clearLocation: () => Promise<void>;
   fetchHistory: () => Promise<void>;
   deleteHistoryItem: (id: string) => Promise<void>;
+  getLocationStatus: () => { hasCurrentLocation: boolean; historyCount: number };
 };
 
 export const useParkingStore = create<ParkingState>((set, get) => ({
@@ -60,6 +61,8 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error('Not authenticated');
 
+      console.log('User authenticated:', user.id);
+
       const optimisticLocation: ParkedLocation = {
         id: 'temp-' + Date.now(),
         lat,
@@ -72,7 +75,12 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         isLoading: false,
       }));
 
-      const { data, error } = await supabase
+      console.log('Inserting into parked_locations:', {
+        user_id: user.id,
+        latitude: lat,
+        longitude: lng,
+      });
+      const { data: locationData, error: locationError } = await supabase
         .from('parked_locations')
         .insert({
           user_id: user.id,
@@ -82,11 +90,19 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .select()
         .single();
 
-      if (error) {
-        set({ location: null, error: error.message, isLoading: false });
-        throw error;
+      if (locationError) {
+        console.error('Error inserting into parked_locations:', locationError);
+        set({ location: null, error: locationError.message, isLoading: false });
+        throw locationError;
       }
 
+      console.log('Successfully inserted into parked_locations:', locationData);
+
+      console.log('Inserting into parking_history:', {
+        user_id: user.id,
+        latitude: lat,
+        longitude: lng,
+      });
       const { data: historyData, error: historyError } = await supabase
         .from('parking_history')
         .insert({
@@ -98,21 +114,49 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .single();
 
       if (historyError) {
-        console.warn('Failed to add to history:', historyError);
+        console.error('ERROR inserting into parking_history:', historyError);
+        console.error('Full error details:', JSON.stringify(historyError, null, 2));
+
+        set((state) => ({
+          location: {
+            id: locationData.id,
+            lat: locationData.latitude,
+            lng: locationData.longitude,
+            created_at: locationData.created_at,
+          },
+          error: `Parked successfully, but failed to save to history: ${historyError.message}`,
+          isLoading: false,
+        }));
+        return;
       }
+
+      console.log('Successfully inserted into parking_history:', historyData);
 
       set((state) => ({
         location: {
-          id: data.id,
-          lat: data.latitude,
-          lng: data.longitude,
-          created_at: data.created_at,
+          id: locationData.id,
+          lat: locationData.latitude,
+          lng: locationData.longitude,
+          created_at: locationData.created_at,
         },
-        history: historyData ? [historyData, ...state.history] : state.history,
+        history: historyData
+          ? [
+              {
+                id: historyData.id,
+                lat: historyData.latitude,
+                lng: historyData.longitude,
+                created_at: historyData.created_at,
+              },
+              ...state.history,
+            ]
+          : state.history,
         isLoading: false,
         error: null,
       }));
+
+      console.log('Successfully parked and added to history');
     } catch (err: any) {
+      console.error('Full parkHere error:', err);
       set({ error: err.message, isLoading: false, location: null });
     }
   },
@@ -133,6 +177,7 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
       }
 
       set({ location: null, isLoading: false, error: null });
+      console.log('Current parking location cleared, but history preserved');
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
     }
@@ -169,5 +214,13 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
     } catch (err: any) {
       set({ error: err.message });
     }
+  },
+
+  getLocationStatus: () => {
+    const state = get();
+    return {
+      hasCurrentLocation: !!state.location,
+      historyCount: state.history.length,
+    };
   },
 }));
