@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Text, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { useParkingStore } from '~/store/locationStore';
 import { FlashList } from '@shopify/flash-list';
 import ParkingHistory from '~/components/ParkingHistory';
@@ -20,11 +20,16 @@ export default function Home() {
   }
   return (
     <View className="flex-1">
-      <FlashList
-        data={history}
-        renderItem={({ item }) => <ParkingHistory item={item} />}
-        keyExtractor={(item) => item.id}
-      />
+      <SafeAreaView style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
+        <Text className="border-b-hairline border-gray-400 p-2 text-xl font-bold text-green-600">
+          {'Parking History'.toUpperCase()}
+        </Text>
+        <FlashList
+          data={history}
+          renderItem={({ item }) => <ParkingHistory item={item} />}
+          keyExtractor={(item) => item.id}
+        />
+      </SafeAreaView>
     </View>
   );
 }
