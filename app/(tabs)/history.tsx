@@ -20,7 +20,9 @@ export default function Home() {
   }
   return (
     <View className="flex-1">
-      <SafeAreaView style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
+      <SafeAreaView
+        style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}
+        className="flex-1">
         <Text className="border-b-hairline border-gray-400 p-2 text-xl font-bold text-green-600">
           {'Parking History'.toUpperCase()}
         </Text>
@@ -28,6 +30,7 @@ export default function Home() {
           data={history}
           renderItem={({ item }) => <ParkingHistory item={item} />}
           keyExtractor={(item) => item.id}
+          estimatedItemSize={100}
         />
       </SafeAreaView>
     </View>

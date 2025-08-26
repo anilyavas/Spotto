@@ -1,6 +1,10 @@
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { ParkedLocation } from '~/store/locationStore';
 
 export default function ParkingHistory({ item }: { item: ParkedLocation }) {
-  return <View>Parking History Component</View>;
+  return (
+    <View>
+      <Text>Parking History Component</Text>
+    </View>
+  );
 }

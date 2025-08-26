@@ -32,7 +32,7 @@ export default function Home() {
     if (!location) return;
     try {
       await parkHere(location?.lat, location?.lng);
-      console.log('Parked at: ', parkedLocation);
+      console.log('Parked at: ', location);
     } catch (error) {
       console.error('Error while parking: ', error);
     }

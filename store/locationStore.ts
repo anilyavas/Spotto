@@ -60,6 +60,18 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error('Not authenticated');
 
+      const optimisticLocation: ParkedLocation = {
+        id: 'temp-' + Date.now(),
+        lat,
+        lng,
+        created_at: new Date().toISOString(),
+      };
+
+      set((state) => ({
+        location: optimisticLocation,
+        isLoading: false,
+      }));
+
       const { data, error } = await supabase
         .from('parked_locations')
         .insert({
@@ -70,7 +82,10 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        set({ location: null, error: error.message, isLoading: false });
+        throw error;
+      }
 
       const { data: historyData, error: historyError } = await supabase
         .from('parking_history')
@@ -82,7 +97,9 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         .select()
         .single();
 
-      if (historyError) throw historyError;
+      if (historyError) {
+        console.warn('Failed to add to history:', historyError);
+      }
 
       set((state) => ({
         location: {
@@ -93,21 +110,29 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
         },
         history: historyData ? [historyData, ...state.history] : state.history,
         isLoading: false,
+        error: null,
       }));
     } catch (err: any) {
-      set({ error: err.message, isLoading: false });
+      set({ error: err.message, isLoading: false, location: null });
     }
   },
 
   clearLocation: async () => {
     try {
-      set({ isLoading: true, error: null });
+      const currentLocation = get().location;
+      set({ location: null, isLoading: true, error: null });
+
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error('Not authenticated');
 
-      await supabase.from('parked_locations').delete().eq('user_id', user.id);
+      const { error } = await supabase.from('parked_locations').delete().eq('user_id', user.id);
 
-      set({ location: null, isLoading: false });
+      if (error) {
+        set({ location: currentLocation, error: error.message, isLoading: false });
+        throw error;
+      }
+
+      set({ location: null, isLoading: false, error: null });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
     }
