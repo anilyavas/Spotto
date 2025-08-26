@@ -72,21 +72,28 @@ export const useParkingStore = create<ParkingState>((set, get) => ({
 
       if (error) throw error;
 
-      await supabase.from('parking_history').insert({
-        user_id: user.id,
-        lat,
-        lng,
-      });
+      const { data: historyData, error: historyError } = await supabase
+        .from('parking_history')
+        .insert({
+          user_id: user.id,
+          latitude: lat,
+          longitude: lng,
+        })
+        .select()
+        .single();
 
-      set({
+      if (historyError) throw historyError;
+
+      set((state) => ({
         location: {
           id: data.id,
           lat: data.latitude,
           lng: data.longitude,
           created_at: data.created_at,
         },
+        history: historyData ? [historyData, ...state.history] : state.history,
         isLoading: false,
-      });
+      }));
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
     }
