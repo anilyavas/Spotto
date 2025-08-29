@@ -8,3 +8,10 @@ export type ParkingSpot = {
   coordinates: LocationCoords;
   timestamp: Date;
 };
+
+export type ParkedLocation = {
+  id: string;
+  lng: number;
+  lat: number;
+  created_at: string;
+};

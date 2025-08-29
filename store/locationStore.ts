@@ -1,12 +1,6 @@
 import { create } from 'zustand';
+import { ParkedLocation } from '~/types/types';
 import { supabase } from '~/utils/supabase';
-
-export type ParkedLocation = {
-  id: string;
-  lng: number;
-  lat: number;
-  created_at: string;
-};
 
 export type ParkingState = {
   location: ParkedLocation | null;
