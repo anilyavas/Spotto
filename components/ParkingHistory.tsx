@@ -1,5 +1,6 @@
 import Fontisto from '@expo/vector-icons/Fontisto';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Linking, Platform } from 'react-native';
+import { supabase } from '~/utils/supabase';
 
 export default function ParkingHistory({
   item,
@@ -8,9 +9,36 @@ export default function ParkingHistory({
     latitude: string;
     longitude: string;
     created_at: string;
-    id: number;
+    id: string;
   };
 }) {
+  const deleteParkingHistory = async (id: string) => {
+    try {
+      await supabase.from('parking_history').delete().eq('id', id);
+    } catch (error: any) {
+      console.log('Error while deleting item ', error.message);
+    }
+  };
+
+  const navigateToParkingPlace = ({ lat, lng }: { lat: number; lng: number }) => {
+    const scheme = Platform.select({
+      ios: 'maps:0,0?q=',
+      android: 'geo:0,0?q=',
+    });
+
+    const latLng = `${lat},${lng}`;
+    const label = 'Parked Car';
+
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    if (url) {
+      Linking.openURL(url).catch((err) => console.log('Error opening maps: ', err));
+    }
+  };
+
   return (
     <View className="m-0.5 flex-row">
       <View className="flex-1 flex-row justify-between bg-gray-300 p-2">
@@ -30,10 +58,21 @@ export default function ParkingHistory({
           </Text>
         </View>
       </View>
-      <Pressable className="items-center justify-center bg-green-600 p-4" onPress={() => {}}>
+
+      <Pressable
+        className="items-center justify-center bg-green-600 p-4"
+        onPress={() =>
+          navigateToParkingPlace({
+            lat: parseFloat(item.latitude),
+            lng: parseFloat(item.longitude),
+          })
+        }>
         <Fontisto name="navigate" size={20} color={'white'} />
       </Pressable>
-      <Pressable className="items-center justify-center bg-red-600 p-4" onPress={() => {}}>
+
+      <Pressable
+        className="items-center justify-center bg-red-600 p-4"
+        onPress={() => deleteParkingHistory(item.id)}>
         <Fontisto name="trash" size={20} color={'white'} />
       </Pressable>
     </View>
