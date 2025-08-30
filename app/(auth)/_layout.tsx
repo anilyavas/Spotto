@@ -7,5 +7,6 @@ export default function AuthLayout() {
   if (isAuthenticated) {
     return <Redirect href={'/(tabs)'} />;
   }
-  return <Stack screenOptions={{ headerShown: false }} />;
+
+  return <Stack screenOptions={{ headerShown: false }} initialRouteName="onboarding" />;
 }
