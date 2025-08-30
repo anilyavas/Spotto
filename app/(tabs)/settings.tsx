@@ -131,6 +131,9 @@ export default function Profile() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      <Text className="border-b-hairline border-gray-400 p-2 text-xl font-bold text-green-600">
+        {'Account Settings'.toUpperCase()}
+      </Text>
       <View className="flex-1 p-5">
         {/* User Info */}
         <View className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
