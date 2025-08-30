@@ -1,5 +1,6 @@
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { View, Text, Pressable, Linking, Platform, Alert } from 'react-native';
+import { useParkingStore } from '~/store/locationStore';
 import { supabase } from '~/utils/supabase';
 
 export default function ParkingHistory({
@@ -12,6 +13,7 @@ export default function ParkingHistory({
     id: string;
   };
 }) {
+  const { fetchHistory } = useParkingStore();
   const deleteParkingHistory = async (id: string) => {
     Alert.alert('Delete Entry', 'Are you sure you want to delete this parking history?', [
       {
@@ -25,7 +27,7 @@ export default function ParkingHistory({
           try {
             await supabase.from('parking_history').delete().eq('id', id);
             console.log('Item deleted successfully');
-            // Add resfesher function
+            fetchHistory();
           } catch (error: any) {
             console.log('Error while deleting item ', error.message);
           }
