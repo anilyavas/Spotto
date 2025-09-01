@@ -21,6 +21,9 @@
 - **AsyncStorage** – Local persistence of parked locations  
 - **Supabase** – Authentication and cloud sync  
 
+## ScreenShots
+**(Will be added later)**
+
 ## ⚙️ Installation
 
 Follow these steps to set up the Spotto app locally:
