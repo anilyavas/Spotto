@@ -96,7 +96,7 @@ export default function Home() {
           onPress={parkedLocation ? handleClear : handlePark}
           isParked={!!parkedLocation}
         />
-        {parkedLocation && <RouteButton />}
+        {parkedLocation && <RouteButton parkedCoords={parkedLocation} />}
       </View>
     </View>
   );
