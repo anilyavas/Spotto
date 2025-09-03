@@ -5,6 +5,7 @@ import { getLocation } from '~/services/locationService';
 import { LocationCoords } from '~/types/types';
 import ParkButton from '~/components/ParkButton';
 import { useParkingStore } from '~/store/locationStore';
+import RouteButton from '~/components/RouteButton';
 
 export default function Home() {
   const [location, setLocation] = useState<LocationCoords | null>(null);
@@ -62,8 +63,8 @@ export default function Home() {
         initialRegion={{
           latitude: location?.lat || 0,
           longitude: location?.lng || 0,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
         }}
         region={{
           latitude: location?.lat || 0,
@@ -90,7 +91,14 @@ export default function Home() {
           </Marker>
         )}
       </MapView>
-      <ParkButton onPress={parkedLocation ? handleClear : handlePark} isParked={!!parkedLocation} />
+      <View className="absolute bottom-5 w-full flex-row justify-around">
+        <ParkButton
+          onPress={parkedLocation ? handleClear : handlePark}
+          isParked={!!parkedLocation}
+        />
+
+        <RouteButton />
+      </View>
     </View>
   );
 }
