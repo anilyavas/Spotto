@@ -26,7 +26,7 @@ export default function RouteButton({
   };
   return (
     <Pressable
-      className="items-center justify-center rounded-full bg-blue-500 p-4"
+      className="w-1/5 items-center justify-center rounded-full bg-blue-500 p-4"
       onPress={() => parkedCoords && routePress({ lat: parkedCoords.lat, lng: parkedCoords.lng })}>
       <FontAwesome6 name="location-arrow" size={20} color="white" />
     </Pressable>
