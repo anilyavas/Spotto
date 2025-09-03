@@ -91,13 +91,12 @@ export default function Home() {
           </Marker>
         )}
       </MapView>
-      <View className="absolute bottom-5 w-full flex-row justify-around">
+      <View className="absolute bottom-5 w-full flex-row items-center justify-around">
         <ParkButton
           onPress={parkedLocation ? handleClear : handlePark}
           isParked={!!parkedLocation}
         />
-
-        <RouteButton />
+        {parkedLocation && <RouteButton />}
       </View>
     </View>
   );
