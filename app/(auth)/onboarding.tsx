@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
-import { Dimensions, SafeAreaView, StatusBar, View, Text, Platform, Image } from 'react-native';
+import { Dimensions, StatusBar, View, Text, Platform, Image } from 'react-native';
 import { Button } from '~/components/Button';
 import Swiper from 'react-native-swiper';
 import onboard1 from '../../assets/onboarding/onboard1.png';
 import onboard2 from '../../assets/onboarding/onboard2.png';
 import onboard3 from '../../assets/onboarding/onboard3.png';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OnboardingPage() {
   return (
