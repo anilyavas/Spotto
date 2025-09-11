@@ -55,6 +55,10 @@ export default function ParkingHistory({
     }
   };
 
+  const shareParkingLocation = () => {
+    // Add either share location via google maps etc. or save location to clipboard as lat lng
+  };
+
   return (
     <View className="m-0.5 flex-row">
       <View className="flex-1 flex-row justify-between bg-gray-300 p-2">
@@ -74,9 +78,11 @@ export default function ParkingHistory({
           </Text>
         </View>
       </View>
-
+      <Pressable className="items-center justify-center bg-blue-600 p-3" onPress={() => {}}>
+        <Fontisto name="share" size={20} color={'white'} />
+      </Pressable>
       <Pressable
-        className="items-center justify-center bg-green-600 p-4"
+        className="items-center justify-center bg-green-600 p-3"
         onPress={() =>
           navigateToParkingPlace({
             lat: parseFloat(item.latitude),
@@ -87,7 +93,7 @@ export default function ParkingHistory({
       </Pressable>
 
       <Pressable
-        className="items-center justify-center bg-red-600 p-4"
+        className="items-center justify-center bg-red-600 p-3"
         onPress={() => deleteParkingHistory(item.id)}>
         <Fontisto name="trash" size={20} color={'white'} />
       </Pressable>
