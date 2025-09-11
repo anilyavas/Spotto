@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { ActivityIndicator, View, Text, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { ActivityIndicator, View, Text, Platform, StatusBar } from 'react-native';
 import { useParkingStore } from '~/store/locationStore';
 import { FlashList } from '@shopify/flash-list';
 import ParkingHistory from '~/components/ParkingHistory';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
   const { fetchHistory, history, isLoading } = useParkingStore();

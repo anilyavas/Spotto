@@ -1,17 +1,10 @@
 import { User } from '@supabase/supabase-js';
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  Alert,
-  SafeAreaView,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 
 import { supabase } from '../../utils/supabase';
 import { useAuth } from '~/context/AuthContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Profile() {
   const [oldPassword, setOldPassword] = useState('');
