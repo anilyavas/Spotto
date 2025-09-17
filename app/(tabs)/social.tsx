@@ -1,4 +1,4 @@
-import { Platform, StatusBar, View, Text } from 'react-native';
+import { Platform, StatusBar, View, Text, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SocialPage() {
@@ -11,6 +11,8 @@ export default function SocialPage() {
         <Text className="border-b-hairline border-gray-400 p-2 text-xl font-bold text-green-600">
           {'Share Parking Experience'.toUpperCase()}
         </Text>
+        <View>{/* Forum part for sharing spots*/}</View>
+        <Pressable>{/* Add button for adding new spot on forum */}</Pressable>
       </SafeAreaView>
     </View>
   );
